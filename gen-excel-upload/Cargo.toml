@@ -1,0 +1,8 @@
+[package]
+name = "gen-excel-upload"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+umya-spreadsheet = "3.0.0"
+
