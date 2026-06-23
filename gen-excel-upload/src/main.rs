@@ -1,17 +1,8 @@
-extern crate umya_spreadsheet;
+
 use std::fs;
-use std::io;
 use std::path::Path;
+mod floc_change;
 
-
-fn modifies(path: &Path) -> io::Result<bool>{
-    // fs::exists(path)?;
-    let mut wb = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let ws = wb.sheet_by_name_mut("Change Request Header").unwrap();
-    ws.cell_mut("B6").set_value("Upload1 Batch 1of1");
-    let _ = umya_spreadsheet::writer::xlsx::write(&wb, path);
-    Ok(true)
-}
 
 
 fn main() {
@@ -22,7 +13,7 @@ fn main() {
         Ok(true)  => {
             println!("uploader_floc_template.xlsx exists");
             let _ = fs::copy(src, dest);
-            let _ = modifies(dest);
+            let _ = floc_change::modifies(dest);
             ()
         },
         Ok(false) => println!("uploader_floc_template.xlsx missing"),
