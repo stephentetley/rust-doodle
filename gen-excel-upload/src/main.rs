@@ -7,8 +7,8 @@ mod floc_change;
 
 fn main() {
 
-    let src = Path::new("/home/stephen/_working/coding/rust/_temp/uploader_floc_template.xlsx");
-    let dest = Path::new("/home/stephen/_working/coding/rust/_temp/upload1.xlsx");
+    let src = Path::new("/home/stephen/_working/coding/rust/data/uploader_floc_template.xlsx");
+    let dest = Path::new("/home/stephen/_working/coding/rust/data/upload1.xlsx");
     match fs::exists(src) {
         Ok(true)  => {
             println!("uploader_floc_template.xlsx exists");
