@@ -1,6 +1,9 @@
+mod circuit;
 use std::path::Path;
 use calamine::{Reader, Xlsx, open_workbook};
 
+
+// Note Calamine is the wrong choice for lib as we want random access
 
 fn read_eawr(path: &Path) {
     println!("{:?}", path);
