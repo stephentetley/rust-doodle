@@ -1,18 +1,17 @@
+extern crate umya_spreadsheet;
 mod circuit;
 use std::path::Path;
-use calamine::{Reader, Xlsx, open_workbook};
 
 
-// Note Calamine is the wrong choice for lib as we want random access
+// Note umya-spreadsheet rather than calamine as we want random access
 
 fn read_eawr(path: &Path) {
     println!("{:?}", path);
-    let workbook: Xlsx<_> = open_workbook(path).expect("Cannot open file");
-
-    workbook.sheet_names().iter()
-        .for_each(|name| {
-            println!("Sheet {},", name);
-        });
+    let workbook = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    for i in 0..(workbook.sheet_count() - 1) {
+        let sheet = workbook.sheet(i).unwrap();
+        println!("Sheet {},", sheet.name());
+    }
 }
 
 
