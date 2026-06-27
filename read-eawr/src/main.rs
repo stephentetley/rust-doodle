@@ -1,7 +1,7 @@
 extern crate umya_spreadsheet;
 mod circuit;
-use std::path::Path;
-
+use std::path::{Path, PathBuf};
+use clap::Parser;
 
 // Note umya-spreadsheet rather than calamine as we want random access
 
@@ -14,8 +14,15 @@ fn read_eawr(path: &Path) {
     }
 }
 
+#[derive(Parser)]
+struct Cli {
+    /// The path to the file to read
+    path: PathBuf,
+}
+
 
 fn main() {
-    let src = Path::new("/home/stephen/_working/coding/rust/data/As_Fitted1.xlsx");
+    let args = Cli::parse();
+    let src = &args.path;
     read_eawr(src);
-}
+}   
