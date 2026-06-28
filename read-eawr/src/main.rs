@@ -38,7 +38,7 @@ fn read_eawr(path: &Path) {
             let sheet = workbook.sheet(i).unwrap();
             if is_test_sheet(sheet) && ! is_version_zero(sheet) {
                 let file_name = path.file_name().and_then(|ss| ss.to_str()).unwrap_or("");
-                let json = read_circuit(file_name, &date_string.as_str(), sheet);
+                let json = read_circuit(3, file_name, &date_string.as_str(), sheet);
                 seq.serialize_element(&json).unwrap();
             }
         }

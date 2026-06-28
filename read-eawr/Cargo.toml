@@ -5,5 +5,7 @@ edition = "2024"
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
+serde = "1.0.220"
+serde_json = { version = "1.0.150", features = ["std"] }
 umya-spreadsheet = "3.0.0"
 
