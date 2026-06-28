@@ -23,15 +23,16 @@ use umya_spreadsheet::*;
 
 
 pub fn is_test_sheet(sheet: &Worksheet) -> bool {
-    sheet.value("F1") == "TEST SHEET"
+    sheet.value("F1").trim() == "TEST SHEET"
 }
 
 pub fn is_version_zero(sheet: &Worksheet) -> bool {
-    sheet.value("B2") == "Site Name:" && sheet.value("B5") == "CIRCUIT/CABLE DETAILS"
+    sheet.value("B2").trim() == "Site Name:" 
+        && sheet.value("B5").trim() == "CIRCUIT/CABLE DETAILS"
 }
 
 pub fn process_circuits<S: SerializeSeq>(seq: &mut S, file_name: &str, date_string: &str, sheet: &Worksheet) -> Result<(), String> {
-    for col in 3..11 {
+    for col in 3..12 {
         if let Some(json) = read_circuit1(col, file_name, date_string, sheet) {
             seq.serialize_element(&json).unwrap();
         }
@@ -41,7 +42,7 @@ pub fn process_circuits<S: SerializeSeq>(seq: &mut S, file_name: &str, date_stri
 
 
 fn read_circuit1(col: u32, file_name: &str, date_string: &str, sheet: &Worksheet) -> Option<Value> {
-    let has_tp_or_sp = sheet.value("E4") == "TP / SP";
+    let has_tp_or_sp = sheet.value("E4").trim() == "TP / SP";
     let location_cell = if has_tp_or_sp {"F5".to_string()} else {"E5".to_string()};
 
     let cable_num = sheet.value((col, 10)).trim().to_string();
@@ -62,6 +63,7 @@ fn read_circuit1(col: u32, file_name: &str, date_string: &str, sheet: &Worksheet
                 "location": sheet.value(location_cell).trim(),
                 "db_or_panel_incomer_details": sheet.value("B7").trim(),
                 // circuit - columns C(3)to K(11)
+                "column": col,
                 "cable_num": cable_num,
                 "fed_from": fed_from,
                 "circuit_ref_and_phase": circuit_ref_and_phase,
