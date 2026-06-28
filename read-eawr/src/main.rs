@@ -19,7 +19,7 @@ use clap::Parser;
 use serde::ser::{SerializeSeq, Serializer};
 mod circuit;
 mod general_checklist;
-use circuit::{is_test_sheet, is_version_zero, read_circuit};
+use circuit::{is_test_sheet, is_version_zero, process_circuits};
 use general_checklist::{get_checklist_data};
 // use serde_json::{Serializer};
 
@@ -38,8 +38,7 @@ fn read_eawr(path: &Path) {
             let sheet = workbook.sheet(i).unwrap();
             if is_test_sheet(sheet) && ! is_version_zero(sheet) {
                 let file_name = path.file_name().and_then(|ss| ss.to_str()).unwrap_or("");
-                let json = read_circuit(3, file_name, &date_string.as_str(), sheet);
-                seq.serialize_element(&json).unwrap();
+                let _ = process_circuits(&mut seq, file_name, &date_string.as_str(), sheet);
             }
         }
         seq.end().unwrap();
