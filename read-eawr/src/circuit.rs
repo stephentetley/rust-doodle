@@ -61,6 +61,7 @@ fn read_circuit1(col: u32, file_name: &str, date_string: &str, sheet: &Worksheet
                 "tp_or_sp": if has_tp_or_sp {sheet.value("E5").trim().to_string()} else {"".to_string()},
                 "location": sheet.value(location_cell).trim(),
                 "db_or_panel_incomer_details": sheet.value("B7").trim(),
+                // circuit - columns C(3)to K(11)
                 "cable_num": cable_num,
                 "fed_from": fed_from,
                 "circuit_ref_and_phase": circuit_ref_and_phase,

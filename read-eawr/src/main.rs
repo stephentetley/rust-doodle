@@ -23,27 +23,29 @@ use circuit::{is_test_sheet, is_version_zero, process_circuits};
 use general_checklist::{get_checklist_data};
 // use serde_json::{Serializer};
 
-// Note umya-spreadsheet rather than calamine as we want random access
+// Note use umya-spreadsheet rather than calamine because we want random access
 
-fn read_eawr(path: &Path) {
-    println!("{:?}", path);
-    let workbook = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let out = std::fs::File::create("out.txt").unwrap(); 
-    let mut writer = BufWriter::new(out);
-    let mut serializer = serde_json::Serializer::new(&mut writer);
-    if let Ok(mut seq) = serializer.serialize_seq(None) {
+fn read_circuit_sheets(xlsx_path: &Path) {
+    if let Ok(workbook) = umya_spreadsheet::reader::xlsx::read(xlsx_path) {
+        let file_name = xlsx_path.file_name().and_then(|ss| ss.to_str()).unwrap_or("Unknown");
+        let out_path = xlsx_path.with_extension("circuits.json");
+        if let Ok(out) = std::fs::File::create(&out_path) {
+            let mut writer = BufWriter::new(out);
+            let mut serializer = serde_json::Serializer::new(&mut writer);
+            if let Ok(mut seq) = serializer.serialize_seq(None) {
 
-        let date_string = get_checklist_data(&workbook);
-        for i in 0..(workbook.sheet_count() - 1) {
-            let sheet = workbook.sheet(i).unwrap();
-            if is_test_sheet(sheet) && ! is_version_zero(sheet) {
-                let file_name = path.file_name().and_then(|ss| ss.to_str()).unwrap_or("");
-                let _ = process_circuits(&mut seq, file_name, &date_string.as_str(), sheet);
+                let date_string = get_checklist_data(&workbook);
+                for i in 0..(workbook.sheet_count() - 1) {
+                    let sheet = workbook.sheet(i).unwrap();
+                    if is_test_sheet(sheet) && ! is_version_zero(sheet) {
+                        let _ = process_circuits(&mut seq, file_name, &date_string.as_str(), sheet);
+                    }
+                }
+                seq.end().unwrap();
             }
-        }
-        seq.end().unwrap();
-    }
-    writer.flush().unwrap();
+            writer.flush().unwrap();
+        } else { println!("Could not create output file {:?}", &out_path) }
+    } else { println!("Could not read {:?}", xlsx_path) }
 }
 
 #[derive(Parser)]
@@ -56,5 +58,5 @@ struct Cli {
 fn main() {
     let args = Cli::parse();
     let src = &args.path;
-    read_eawr(src);
+    read_circuit_sheets(src);
 }   
