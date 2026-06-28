@@ -19,9 +19,10 @@ pub fn is_version_zero(sheet: &Worksheet) -> bool {
     sheet.value("B2") == "Site Name:" && sheet.value("B5") == "CIRCUIT/CABLE DETAILS"
 }
 
-pub fn read_circuit(file_name: &str, sheet: &Worksheet) -> serde_json::Value {
+pub fn read_circuit(file_name: &str, date_string: &str, sheet: &Worksheet) -> serde_json::Value {
     json!({
         "file_name": file_name,
+        "date_string": date_string,
         "sheet_name": sheet.name(),
     })
 }
